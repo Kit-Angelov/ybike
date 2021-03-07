@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "351142053416",
+    "project_id": "ybike-992b9",
+    "storage_bucket": "ybike-992b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351142053416:android:c4ca4c2d82541ef9db971d",
+        "android_client_info": {
+          "package_name": "com.example.ybike"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "351142053416-d7cir5pq9sjmk7h5ae6beuh3vi9audrs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkNBfbVErx2P7c3rfluYCSgraQcs8_y1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "351142053416-d7cir5pq9sjmk7h5ae6beuh3vi9audrs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5070541116762629~7708625515"
+    }
+  ],
+  "configuration_version": "1"
+}
