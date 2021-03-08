@@ -50,9 +50,7 @@ class _HomePageState extends State<HomePage> {
     return InterstitialAd(
       adUnitId: InterstitialAd.testAdUnitId,
       targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-        print("InterstitialAd event $event");
-      },
+      listener: (MobileAdEvent event) {},
     );
   }
 
@@ -73,8 +71,8 @@ class _HomePageState extends State<HomePage> {
 
   // location data
   var location = new l.Location();
-  var speed = 0.0;
-  var altitude = 0.0;
+  var speed = 0;
+  var altitude = 0;
   var positionStream;
 
   // time data
@@ -85,15 +83,15 @@ class _HomePageState extends State<HomePage> {
 
   // ride data
   var rideDate = 0;
-  var rideDistance = 0.0;
-  var rideElevationGain = 0.0;
+  var rideDistance = 0;
+  var rideElevationGain = 0;
   var rideDuration = 0;
   var rideDurationTimer;
-  var rideAvgSpeed = 0.0;
-  var rideMaxSpeed = 0.0;
+  var rideAvgSpeed = 0;
+  var rideMaxSpeed = 0;
   var trackPoints = [];
-  var rideMaxAltitude = 0.0;
-  var rideMinAltitude = 0.0;
+  var rideMaxAltitude = 0;
+  var rideMinAltitude = 0;
 
   getLocationPermission() async {
     var permissionGranted = await location.hasPermission();
@@ -123,16 +121,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   runGeolocatorGetter() {
-    geoTimer = Stream.periodic(Duration(seconds: 2), (i) async {
+    geoTimer = Stream.periodic(Duration(seconds: 1), (i) async {
       var position = await Geolocator.getLastKnownPosition();
-      print(position.latitude);
       setState(() {
         var currentSpeed =
-            position == null ? 0.0 : (position.speed.toInt() * 18) / 5;
+            position == null ? 0 : ((position.speed.toInt() * 18) ~/ 5);
         if (rideStarted && ridePaused == false && position != null) {
           updateRideData(position, currentSpeed);
         }
         speed = currentSpeed;
+        altitude = position.altitude.toInt();
       });
     });
     geoTimer.listen((_) {});
@@ -177,16 +175,16 @@ class _HomePageState extends State<HomePage> {
   clearRideData() {
     setState(() {
       rideDate = 0;
-      rideDistance = 0.0;
-      rideElevationGain = 0.0;
+      rideDistance = 0;
+      rideElevationGain = 0;
       rideDuration = 0;
       rideDurationTimer?.cancel();
-      rideAvgSpeed = 0.0;
-      rideMaxSpeed = 0.0;
+      rideAvgSpeed = 0;
+      rideMaxSpeed = 0;
       trackPoints = [];
       mapWidgetState.currentState.removeTrack();
-      rideMaxAltitude = 0.0;
-      rideMinAltitude = 0.0;
+      rideMaxAltitude = 0;
+      rideMinAltitude = 0;
     });
   }
 
@@ -195,17 +193,21 @@ class _HomePageState extends State<HomePage> {
       if (lastPosition != null) {
         var distanceCurrent = Geolocator.distanceBetween(lastPosition.latitude,
             lastPosition.longitude, position.latitude, position.longitude);
-        if (distanceCurrent < 3) {
+        if (distanceCurrent < 1) {
           return;
         }
       }
-      trackPoints.add(
-          [position.latitude, position.longitude, position.altitude, speed]);
+      trackPoints.add([
+        position.latitude,
+        position.longitude,
+        position.altitude,
+        currentSpeed
+      ]);
       mapWidgetState.currentState.drawTrack(trackPoints);
       calcDistance();
       calcElevation();
       calcAvgSpeed();
-      calcMaxMinAltitude(position.altitude);
+      calcMaxMinAltitude(position.altitude.toInt());
       calcMaxSpeed(currentSpeed);
       lastPosition = position;
     });
@@ -224,26 +226,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   calcDistance() {
-    rideDistance = 0.0;
+    rideDistance = 0;
     if (trackPoints.length < 2) {
       return;
     }
+    var distanceSum = 0.0;
     var prevPoint = trackPoints[0];
     for (var nextPoint in trackPoints) {
       if (prevPoint == nextPoint) {
         continue;
       }
-      rideDistance += Geolocator.distanceBetween(
+      distanceSum += Geolocator.distanceBetween(
           prevPoint[0], prevPoint[1], nextPoint[0], nextPoint[1]);
       prevPoint = nextPoint;
     }
+    rideDistance = distanceSum.toInt();
   }
 
   calcElevation() {
-    rideElevationGain = 0.0;
+    rideElevationGain = 0;
     if (trackPoints.length < 2) {
       return;
     }
+    var elevationGainSum = 0.0;
     var prevPoint = trackPoints[0];
     for (var nextPoint in trackPoints) {
       if (prevPoint == nextPoint) {
@@ -251,29 +256,30 @@ class _HomePageState extends State<HomePage> {
       }
       var delta = nextPoint[2] - prevPoint[2];
       if (delta > 0) {
-        rideElevationGain += delta;
+        elevationGainSum += delta;
       }
       prevPoint = nextPoint;
     }
+    rideElevationGain = elevationGainSum.toInt();
   }
 
   calcAvgSpeed() {
     setState(() {
-      if (rideDuration > 0 && trackPoints.length > 2) {
+      if (rideDuration > 0 && trackPoints.length > 1) {
         var pointCount = 0;
-        var speedSum = 0.0;
+        var speedSum = 0;
         for (var point in trackPoints) {
           pointCount += 1;
           speedSum += point[3];
         }
-        rideAvgSpeed = speedSum / pointCount;
+        rideAvgSpeed = speedSum ~/ pointCount;
       }
     });
   }
 
   calcMaxSpeed(currentSpeed) {
     setState(() {
-      if (currentSpeed > speed) {
+      if (currentSpeed > rideMaxSpeed) {
         rideMaxSpeed = currentSpeed;
       }
     });

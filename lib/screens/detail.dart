@@ -178,8 +178,8 @@ class _DetailPageState extends State<DetailPage> {
                           fit: FlexFit.tight,
                           child: Container(
                               padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
-                              child: MaxSpeedWidget(
-                                  widget.ride.maxaltitude, 72, 75)),
+                              child:
+                                  MaxSpeedWidget(widget.ride.maxspeed, 72, 75)),
                         ),
                         Flexible(
                           flex: 2,
@@ -216,11 +216,9 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: MiniMapWidget()
-                      // MiniMapWidget(
-                      //   trackPointList: trackPoints,
-                      // )
-                      ))
+                      child: MiniMapWidget(
+                        trackPointList: trackPoints,
+                      )))
               : SizedBox(),
           SizedBox(
             height: 20,

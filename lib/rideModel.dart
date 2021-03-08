@@ -12,14 +12,14 @@ String rideToJson(Ride data) {
 
 class Ride {
   int id;
-  double distance;
+  int distance;
   int date;
   int duration;
-  double maxaltitude;
-  double minaltitude;
-  double avgspeed;
-  double maxspeed;
-  double elevation;
+  int maxaltitude;
+  int minaltitude;
+  int avgspeed;
+  int maxspeed;
+  int elevation;
 
   Ride(
       {this.id,
@@ -62,7 +62,7 @@ class TrackPoint {
   double lat;
   double lng;
   double alt;
-  double speed;
+  int speed;
   int rideid;
 
   TrackPoint({this.id, this.lat, this.lng, this.alt, this.speed, this.rideid});

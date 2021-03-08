@@ -1,5 +1,5 @@
-name: mapbox_gl_example
-description: Demonstrates how to use the mapbox_gl plugin.
+name: ybike
+description: ybike
 publish_to: 'none'
 version: 1.0.0+1
 

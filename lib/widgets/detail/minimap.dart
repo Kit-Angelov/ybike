@@ -87,7 +87,6 @@ class MiniMapWidgetState extends State<MiniMapWidget> {
           lineWidth: 4.0,
           lineOpacity: 0.9,
           draggable: false));
-      print('ERERER');
       var latLngList = await mapController.getLineLatLngs(trackLine);
       var bounds = boundsFromLatLngList(latLngList);
       mapController.moveCamera(CameraUpdate.newLatLngBounds(

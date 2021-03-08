@@ -1,4 +1,4 @@
-package com.mapbox.mapboxglexample;
+package com.example.ybike;
 
 import io.flutter.embedding.android.FlutterActivity;
 

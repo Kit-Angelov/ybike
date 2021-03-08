@@ -1,4 +1,4 @@
-package com.mapbox.example
+package com.example.ybike
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

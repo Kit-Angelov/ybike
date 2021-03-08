@@ -79,7 +79,6 @@ class DBProvider {
             point[3],
             rideid,
           ]);
-      print(raw);
     }
     return rideid;
   }
