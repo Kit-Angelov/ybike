@@ -49,7 +49,6 @@ class HeightChartWidgetState extends State<HeightChartWidget> {
   LineChartData mainData() {
     var altitudeMaxVar = 0.0;
     var altitudeMinVar = 0.0;
-    List data = [];
     List<FlSpot> flData = [];
     var prevPoint;
     var distance = 0.0;
@@ -72,7 +71,6 @@ class HeightChartWidgetState extends State<HeightChartWidget> {
             prevPoint.lat, prevPoint.lng, point.lat, point.lng);
       }
       pointDistance = distance.toInt() / 1000;
-      data.add([pointDistance, pointAltitude]);
       flData.add(FlSpot(pointDistance, pointAltitude));
     }
     var altitudeMax = altitudeMaxVar;

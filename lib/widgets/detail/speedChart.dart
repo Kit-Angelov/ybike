@@ -47,9 +47,8 @@ class SpeedChartWidgetState extends State<SpeedChartWidget> {
   }
 
   LineChartData mainData() {
-    var speedMaxVar = 0.0;
-    var speedMinVar = 0.0;
-    List data = [];
+    var speedMaxVar = 0;
+    var speedMinVar = 0;
     List<FlSpot> flData = [];
     var prevPoint;
     var distance = 0.0;
@@ -72,8 +71,7 @@ class SpeedChartWidgetState extends State<SpeedChartWidget> {
             prevPoint.lat, prevPoint.lng, point.lat, point.lng);
       }
       pointDistance = distance.toInt() / 1000;
-      data.add([pointDistance, pointSpeed]);
-      flData.add(FlSpot(pointDistance, pointSpeed));
+      flData.add(FlSpot(pointDistance, pointSpeed.toDouble()));
     }
     var speedMax = speedMaxVar;
     var speedMin = speedMinVar;
@@ -131,9 +129,9 @@ class SpeedChartWidgetState extends State<SpeedChartWidget> {
           ),
           getTitles: (value) {
             if (value.toInt() == speedMax.toInt()) {
-              return '${speedMax.toInt()} m';
+              return '${speedMax.toInt()} km/h';
             } else if (value.toInt() == speedMin.toInt()) {
-              return '${speedMin.toInt()} m';
+              return '${speedMin.toInt()} km/h';
             } else {
               return '';
             }
