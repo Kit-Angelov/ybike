@@ -54,7 +54,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       backgroundColor: backgroundDark,
       body: ListView(
-        padding: EdgeInsets.fromLTRB(7, 20, 7, 50),
+        padding: EdgeInsets.fromLTRB(7, 30, 7, 50),
         physics: AlwaysScrollableScrollPhysics(),
         primary: false,
         controller: _controller,
@@ -214,11 +214,26 @@ class _DetailPageState extends State<DetailPage> {
                           spreadRadius: 1),
                     ],
                   ),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: MiniMapWidget(
-                        trackPointList: trackPoints,
-                      )))
+                  child: Stack(children: [
+                    ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: MiniMapWidget(
+                          trackPointList: trackPoints,
+                        )),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MapWidget(
+                                        trackPointList: trackPoints,
+                                      )));
+                        },
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                                height: 220, color: Colors.transparent)))
+                  ]))
               : SizedBox(),
           SizedBox(
             height: 20,

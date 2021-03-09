@@ -67,51 +67,59 @@ class MapWidgetState extends State<MapWidget> {
       Positioned(
           top: MediaQuery.of(context).size.height / 2 - 60,
           left: 5,
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: dark,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26,
-                    offset: Offset(1, 1),
-                    blurRadius: 2,
-                    spreadRadius: 1),
-              ],
-            ),
-            child: Center(
-                child: Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 25,
-            )),
-          )),
+          child: GestureDetector(
+              onTap: () {
+                mapController.animateCamera(CameraUpdate.zoomIn());
+              },
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: dark,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(1, 1),
+                        blurRadius: 2,
+                        spreadRadius: 1),
+                  ],
+                ),
+                child: Center(
+                    child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                  size: 25,
+                )),
+              ))),
       Positioned(
           top: MediaQuery.of(context).size.height / 2,
           left: 5,
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: dark,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26,
-                    offset: Offset(1, 1),
-                    blurRadius: 2,
-                    spreadRadius: 1),
-              ],
-            ),
-            child: Center(
-                child: Icon(
-              Icons.remove,
-              color: Colors.white,
-              size: 25,
-            )),
-          )),
+          child: GestureDetector(
+              onTap: () {
+                mapController.animateCamera(CameraUpdate.zoomOut());
+              },
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: dark,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(1, 1),
+                        blurRadius: 2,
+                        spreadRadius: 1),
+                  ],
+                ),
+                child: Center(
+                    child: Icon(
+                  Icons.remove,
+                  color: Colors.white,
+                  size: 25,
+                )),
+              ))),
       Positioned(
           top: MediaQuery.of(context).size.height / 2,
           right: 5,

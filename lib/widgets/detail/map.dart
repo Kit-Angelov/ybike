@@ -6,7 +6,8 @@ import '../../colors.dart';
 import 'package:geolocator/geolocator.dart';
 
 class MapWidget extends StatefulWidget {
-  MapWidget({Key key}) : super(key: key);
+  List trackPointList;
+  MapWidget({Key key, this.trackPointList}) : super(key: key);
   @override
   MapWidgetState createState() => MapWidgetState();
 }
@@ -31,9 +32,8 @@ class MapWidgetState extends State<MapWidget> {
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
   bool _zoomGesturesEnabled = true;
-  bool _myLocationEnabled = true;
-  MyLocationTrackingMode _myLocationTrackingMode =
-      MyLocationTrackingMode.Tracking;
+  bool _myLocationEnabled = false;
+  MyLocationTrackingMode _myLocationTrackingMode = MyLocationTrackingMode.None;
 
   Line trackLine;
 
@@ -44,7 +44,6 @@ class MapWidgetState extends State<MapWidget> {
           "pk.eyJ1Ijoia2l0YW5nZWxvdiIsImEiOiJjamd1aHZncTMxMjF6MndtcWdjZGZhY2g1In0.s4vQ4pbKkTCpKt6psOPxMw",
       onMapCreated: onMapCreated,
       initialCameraPosition: _kInitialPosition,
-      trackCameraPosition: true,
       compassEnabled: true,
       compassViewPosition: CompassViewPosition.BottomLeft,
       compassViewMargins: Point(20, 350),
@@ -57,8 +56,6 @@ class MapWidgetState extends State<MapWidget> {
       zoomGesturesEnabled: _zoomGesturesEnabled,
       myLocationEnabled: _myLocationEnabled,
       myLocationTrackingMode: _myLocationTrackingMode,
-      myLocationRenderMode: MyLocationRenderMode.NORMAL,
-      // onCameraIdle: _onCameraIdle,
       onMapClick: (point, latLng) async {},
       onMapLongClick: (point, latLng) async {},
     );
@@ -67,56 +64,10 @@ class MapWidgetState extends State<MapWidget> {
       Positioned(
           top: MediaQuery.of(context).size.height / 2 - 60,
           left: 5,
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: dark,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26,
-                    offset: Offset(1, 1),
-                    blurRadius: 2,
-                    spreadRadius: 1),
-              ],
-            ),
-            child: Center(
-                child: Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 25,
-            )),
-          )),
-      Positioned(
-          top: MediaQuery.of(context).size.height / 2,
-          left: 5,
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: dark,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black26,
-                    offset: Offset(1, 1),
-                    blurRadius: 2,
-                    spreadRadius: 1),
-              ],
-            ),
-            child: Center(
-                child: Icon(
-              Icons.remove,
-              color: Colors.white,
-              size: 25,
-            )),
-          )),
-      Positioned(
-          top: MediaQuery.of(context).size.height / 2,
-          right: 5,
           child: GestureDetector(
-              onTap: toMyLocation,
+              onTap: () {
+                mapController.animateCamera(CameraUpdate.zoomIn());
+              },
               child: Container(
                 width: 50,
                 height: 50,
@@ -133,7 +84,35 @@ class MapWidgetState extends State<MapWidget> {
                 ),
                 child: Center(
                     child: Icon(
-                  Icons.near_me,
+                  Icons.add,
+                  color: Colors.white,
+                  size: 25,
+                )),
+              ))),
+      Positioned(
+          top: MediaQuery.of(context).size.height / 2,
+          left: 5,
+          child: GestureDetector(
+              onTap: () {
+                mapController.animateCamera(CameraUpdate.zoomOut());
+              },
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: dark,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(1, 1),
+                        blurRadius: 2,
+                        spreadRadius: 1),
+                  ],
+                ),
+                child: Center(
+                    child: Icon(
+                  Icons.remove,
                   color: Colors.white,
                   size: 25,
                 )),
@@ -167,8 +146,11 @@ class MapWidgetState extends State<MapWidget> {
     ]);
   }
 
-  void onMapCreated(MapboxMapController controller) {
+  void onMapCreated(MapboxMapController controller) async {
     mapController = controller;
+    if (widget.trackPointList.length > 0) {
+      drawTrack(widget.trackPointList);
+    }
   }
 
   // move to my position
@@ -197,25 +179,40 @@ class MapWidgetState extends State<MapWidget> {
 
   void drawTrack(trackPoints) async {
     List<LatLng> geometry = [];
-    removeTrack();
     for (var point in trackPoints) {
-      geometry.add(LatLng(point[0], point[1]));
+      geometry.add(LatLng(point.lat, point.lng));
     }
-    trackLine = await mapController.addLine(LineOptions(
-        geometry: geometry,
-        lineColor: "#3bde9b",
-        lineWidth: 4.0,
-        lineOpacity: 0.9,
-        draggable: false));
+    Future.delayed(const Duration(seconds: 2), () async {
+      trackLine = await mapController.addLine(LineOptions(
+          geometry: geometry,
+          lineColor: "#3bde9b",
+          lineWidth: 4.0,
+          lineOpacity: 0.9,
+          draggable: false));
+      var latLngList = await mapController.getLineLatLngs(trackLine);
+      var bounds = boundsFromLatLngList(latLngList);
+      mapController.moveCamera(CameraUpdate.newLatLngBounds(
+        bounds,
+      ));
+    });
   }
 
-  void removeTrack() async {
-    if (trackLine != null) {
-      await mapController.removeLine(trackLine);
-      setState(() {
-        trackLine = null;
-      });
+  LatLngBounds boundsFromLatLngList(List<LatLng> list) {
+    double x0, x1, y0, y1;
+    for (LatLng latLng in list) {
+      if (x0 == null) {
+        x0 = x1 = latLng.latitude;
+        y0 = y1 = latLng.longitude;
+      } else {
+        if (latLng.latitude > x1) x1 = latLng.latitude;
+        if (latLng.latitude < x0) x0 = latLng.latitude;
+        if (latLng.longitude > y1) y1 = latLng.longitude;
+        if (latLng.longitude < y0) y0 = latLng.longitude;
+      }
     }
+    return LatLngBounds(
+        northeast: LatLng(x1 + 0.0001, y1 + 0.0001),
+        southwest: LatLng(x0 - 0.0001, y0 - 0.0001));
   }
 
   // select map layer

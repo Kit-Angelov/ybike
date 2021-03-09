@@ -2,10 +2,6 @@ import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
-import '../../colors.dart';
-
-import 'package:geolocator/geolocator.dart';
-import '../../rideModel.dart';
 
 class MiniMapWidget extends StatefulWidget {
   List trackPointList;
@@ -50,6 +46,8 @@ class MiniMapWidgetState extends State<MiniMapWidget> {
       accessToken:
           "pk.eyJ1Ijoia2l0YW5nZWxvdiIsImEiOiJjamd1aHZncTMxMjF6MndtcWdjZGZhY2g1In0.s4vQ4pbKkTCpKt6psOPxMw",
       onMapCreated: onMapCreated,
+      logoViewMargins: Point(-300, -300),
+      attributionButtonMargins: Point(-300, -300),
       initialCameraPosition: _kInitialPosition,
       cameraTargetBounds: _cameraTargetBounds,
       minMaxZoomPreference: _minMaxZoomPreference,

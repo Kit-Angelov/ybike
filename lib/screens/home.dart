@@ -339,9 +339,9 @@ class _HomePageState extends State<HomePage> {
         body: Stack(
           children: [
             mapWidget,
-            Positioned(top: 30, left: 5, child: SpeedWidget(speed, 166, 80)),
+            Positioned(top: 40, left: 5, child: SpeedWidget(speed, 166, 80)),
             Positioned(
-                top: 30,
+                top: 40,
                 right: 5,
                 child: CurrentTimeWidget(currentTime, 124, 80)),
             rideStarted == false
@@ -407,19 +407,19 @@ class _HomePageState extends State<HomePage> {
                 : SizedBox(),
             rideStarted == true
                 ? Positioned(
-                    top: 120,
+                    top: 130,
                     left: 5,
                     child: AvgSpeedWidget(rideAvgSpeed, 80, 55))
                 : SizedBox(),
             rideStarted == true
                 ? Positioned(
-                    top: 120,
+                    top: 130,
                     left: 91,
                     child: MaxSpeedWidget(rideMaxSpeed, 80, 55))
                 : SizedBox(),
             rideStarted == true
                 ? Positioned(
-                    top: 120,
+                    top: 130,
                     right: 5,
                     child: DurationWidget(rideDuration, 124, 55))
                 : SizedBox(),
