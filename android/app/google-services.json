@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:351142053416:android:c4ca4c2d82541ef9db971d",
         "android_client_info": {
-          "package_name": "com.example.ybike"
+          "package_name": "xyz.ybike.ybike"
         }
       },
       "oauth_client": [

@@ -121,8 +121,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   runGeolocatorGetter() {
-    geoTimer = Stream.periodic(Duration(seconds: 1), (i) async {
-      var position = await Geolocator.getLastKnownPosition();
+    positionStream = Geolocator.getPositionStream(
+            desiredAccuracy: LocationAccuracy.best, distanceFilter: 1)
+        .listen((Position position) {
       setState(() {
         var currentSpeed =
             position == null ? 0 : ((position.speed.toInt() * 18) ~/ 5);
@@ -133,7 +134,6 @@ class _HomePageState extends State<HomePage> {
         altitude = position.altitude.toInt();
       });
     });
-    geoTimer.listen((_) {});
   }
 
   currentTimeStreamInit() {
@@ -315,7 +315,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     Wakelock.disable();
-    geoTimer?.cancel();
+    positionStream?.cancel();
     currentTimer?.cancel();
     rideDurationTimer?.cance();
     _interstitialAd?.dispose();

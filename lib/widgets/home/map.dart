@@ -14,7 +14,7 @@ class MapWidget extends StatefulWidget {
 class MapWidgetState extends State<MapWidget> {
   static final CameraPosition _kInitialPosition = const CameraPosition(
     target: LatLng(51.852, 39.211),
-    zoom: 13.0,
+    zoom: 18.0,
   );
 
   MapboxMapController mapController;
@@ -33,7 +33,7 @@ class MapWidgetState extends State<MapWidget> {
   bool _zoomGesturesEnabled = true;
   bool _myLocationEnabled = true;
   MyLocationTrackingMode _myLocationTrackingMode =
-      MyLocationTrackingMode.Tracking;
+      MyLocationTrackingMode.TrackingCompass;
 
   Line trackLine;
 
@@ -57,7 +57,7 @@ class MapWidgetState extends State<MapWidget> {
       zoomGesturesEnabled: _zoomGesturesEnabled,
       myLocationEnabled: _myLocationEnabled,
       myLocationTrackingMode: _myLocationTrackingMode,
-      myLocationRenderMode: MyLocationRenderMode.NORMAL,
+      myLocationRenderMode: MyLocationRenderMode.COMPASS,
       // onCameraIdle: _onCameraIdle,
       onMapClick: (point, latLng) async {},
       onMapLongClick: (point, latLng) async {},
@@ -177,6 +177,7 @@ class MapWidgetState extends State<MapWidget> {
 
   void onMapCreated(MapboxMapController controller) {
     mapController = controller;
+    mapController.setTelemetryEnabled(false);
   }
 
   // move to my position
@@ -201,6 +202,7 @@ class MapWidgetState extends State<MapWidget> {
       LatLng latlng = LatLng(position.latitude, position.longitude);
       animateCameraPosition(latlng);
     }
+    mapController.updateMyLocationTrackingMode(_myLocationTrackingMode);
   }
 
   void drawTrack(trackPoints) async {
