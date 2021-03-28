@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
 
   InterstitialAd createInterstitialAd() {
     return InterstitialAd(
-      adUnitId: InterstitialAd.testAdUnitId,
+      adUnitId: 'ca-app-pub-5070541116762629/1798372020',
       targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {},
     );
